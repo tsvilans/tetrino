@@ -1,0 +1,6 @@
+C:\git\projects\TetRhino\TetRhino\x64\Release\TetgenSharp.dll
+C:\git\projects\TetRhino\TetRhino\x64\Release\TetgenSharp.pdb
+C:\git\projects\TetRhino\TetRhino\bin\TetgenSharp.dll
+C:\git\projects\TetRhino\TetRhino\bin\TetgenSharp.pdb
+C:\git\projects\TetRhino\TetRhino\TetgenSharp\obj\Release\TetgenSharp.dll
+C:\git\projects\TetRhino\TetRhino\TetgenSharp\obj\Release\TetgenSharp.pdb

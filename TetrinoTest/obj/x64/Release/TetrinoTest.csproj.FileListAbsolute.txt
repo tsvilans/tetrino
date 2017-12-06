@@ -1,0 +1,6 @@
+C:\git\projects\TetRhino\TetRhino\bin\Test.exe.config
+C:\git\projects\TetRhino\TetRhino\bin\Test.exe
+C:\git\projects\TetRhino\TetRhino\bin\Test.pdb
+C:\git\projects\TetRhino\TetRhino\TetrinoTest\obj\x64\Release\TetrinoTest.csprojResolveAssemblyReference.cache
+C:\git\projects\TetRhino\TetRhino\TetrinoTest\obj\x64\Release\Test.exe
+C:\git\projects\TetRhino\TetRhino\TetrinoTest\obj\x64\Release\Test.pdb

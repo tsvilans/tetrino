@@ -1,0 +1,8 @@
+﻿     Creating library C:\git\projects\TetRhino\TetRhino\x64\Release\TetgenWrapper.lib and object C:\git\projects\TetRhino\TetRhino\x64\Release\TetgenWrapper.exp
+  Generating code
+  1 of 26 functions ( 3.8%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  TetgenWrapper.vcxproj -> C:\git\projects\TetRhino\TetRhino\x64\Release\TetgenWrapper.dll
+  TetgenWrapper.vcxproj -> C:\git\projects\TetRhino\TetRhino\x64\Release\TetgenWrapper.pdb (Full PDB)

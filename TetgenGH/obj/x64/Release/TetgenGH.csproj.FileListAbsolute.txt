@@ -1,0 +1,9 @@
+C:\git\projects\TetRhino\TetRhino\x64\Release\TetgenGH.dll
+C:\git\projects\TetRhino\TetRhino\x64\Release\TetgenGH.pdb
+C:\git\projects\TetRhino\TetRhino\bin\TetgenGH.dll
+C:\git\projects\TetRhino\TetRhino\bin\TetgenGH.pdb
+C:\git\projects\TetRhino\TetRhino\TetgenGH\obj\x64\Release\TetgenGH.csprojResolveAssemblyReference.cache
+C:\git\projects\TetRhino\TetRhino\TetgenGH\obj\x64\Release\TetgenGH.Properties.Resources.resources
+C:\git\projects\TetRhino\TetRhino\TetgenGH\obj\x64\Release\TetgenGH.csproj.GenerateResource.Cache
+C:\git\projects\TetRhino\TetRhino\TetgenGH\obj\x64\Release\TetgenGH.dll
+C:\git\projects\TetRhino\TetRhino\TetgenGH\obj\x64\Release\TetgenGH.pdb

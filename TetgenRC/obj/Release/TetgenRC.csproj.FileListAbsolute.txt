@@ -1,0 +1,5 @@
+C:\git\projects\TetRhino\TetRhino\bin\TetgenRC.dll
+C:\git\projects\TetRhino\TetRhino\bin\TetgenRC.pdb
+C:\git\projects\TetRhino\TetRhino\TetgenRC\obj\Release\TetgenRC.csprojResolveAssemblyReference.cache
+C:\git\projects\TetRhino\TetRhino\TetgenRC\obj\Release\TetgenRC.dll
+C:\git\projects\TetRhino\TetRhino\TetgenRC\obj\Release\TetgenRC.pdb
