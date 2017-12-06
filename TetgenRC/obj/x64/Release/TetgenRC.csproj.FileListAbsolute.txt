@@ -1,7 +1,0 @@
-C:\git\projects\TetRhino\TetRhino\x64\Release\TetgenRC.dll
-C:\git\projects\TetRhino\TetRhino\x64\Release\TetgenRC.pdb
-C:\git\projects\TetRhino\TetRhino\bin\TetgenRC.dll
-C:\git\projects\TetRhino\TetRhino\bin\TetgenRC.pdb
-C:\git\projects\TetRhino\TetRhino\TetgenRC\obj\x64\Release\TetgenRC.csprojResolveAssemblyReference.cache
-C:\git\projects\TetRhino\TetRhino\TetgenRC\obj\x64\Release\TetgenRC.dll
-C:\git\projects\TetRhino\TetRhino\TetgenRC\obj\x64\Release\TetgenRC.pdb

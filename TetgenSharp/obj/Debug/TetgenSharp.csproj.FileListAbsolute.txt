@@ -1,7 +1,0 @@
-C:\git\projects\TetRhino\TetRhino\x64\Debug\TetgenSharp.dll
-C:\git\projects\TetRhino\TetRhino\x64\Debug\TetgenSharp.pdb
-C:\git\projects\TetRhino\TetRhino\TetgenSharp\obj\Debug\TetgenSharp.dll
-C:\git\projects\TetRhino\TetRhino\TetgenSharp\obj\Debug\TetgenSharp.pdb
-C:\git\projects\TetRhino\TetRhino\bin\TetgenSharp.dll
-C:\git\projects\TetRhino\TetRhino\bin\TetgenSharp.pdb
-C:\git\projects\TetRhino\TetRhino\TetgenSharp\obj\Debug\TetgenSharp.csprojResolveAssemblyReference.cache

@@ -1,4 +1,0 @@
-C:\git\projects\TetRhino\TetRhino\x86\Release\TetgenSharp.dll
-C:\git\projects\TetRhino\TetRhino\x86\Release\TetgenSharp.pdb
-C:\git\projects\TetRhino\TetRhino\TetgenSharp\obj\x86\Debug\TetgenSharp.dll
-C:\git\projects\TetRhino\TetRhino\TetgenSharp\obj\x86\Debug\TetgenSharp.pdb
