@@ -8,13 +8,13 @@ The libs are divided again into different modules to allow flexibility and fun w
 
 Once again, the libs are provided as-is, with no guarantee of support for now, as I use them internally and do not intend to develop this into a shiny, polished plug-in. If there is enough interest, I can tidy up the code-base and upload it somewhere if someone more savvy than me wants to play.
 
-TetgenGH.gha - Grasshopper assembly which adds the 'Tetrahedralize' component to Mesh -> Triangulation.
+**TetgenGH.gha** - Grasshopper assembly which adds the 'Tetrahedralize' component to Mesh -> Triangulation.
 
-TetgenRC.dll - RhinoCommon interface to the Tetgen wrapper.
+**TetgenRC.dll** - RhinoCommon interface to the Tetgen wrapper.
 
-TetgenSharp.dll - dotNET wrapper for Tetgen.
+**TetgenSharp.dll** - dotNET wrapper for Tetgen.
 
-TetgenWrapper.dll - Actual wrapper for Tetgen.
+**TetgenWrapper.dll** - Actual wrapper for Tetgen.
 
 Obviously, credit where credit is due for this excellent and tiny piece of software: 
 
@@ -24,19 +24,19 @@ To wrap up, some notes about the inputs:
 
 These are the possible integer Flags (F) values and resultant outputs for the GH component:
 
-0 - Output M yields a closed boundary mesh. Useful for simply remeshing your input mesh.
+**0** - Output M yields a closed boundary mesh. Useful for simply remeshing your input mesh.
 
-1 - Output M yields a list of tetra meshes.
+**1** - Output M yields a list of tetra meshes.
 
-2 - Output I yields a DataTree of tetra indices, grouped in lists of 4. Output P yields a list of points to which the tetra indices correspond.
+**2** - Output I yields a DataTree of tetra indices, grouped in lists of 4. Output P yields a list of points to which the tetra indices correspond.
 
-3 - Output I yields a DataTree of edge indices, grouped in lists of 2. Output P yields a list of points to which the edge indices correspond. Useful for lots of things, very easy to create lines from this to plug into K2 or something for some ropey FEA (or not so ropey!) ;)
+**3** - Output I yields a DataTree of edge indices, grouped in lists of 2. Output P yields a list of points to which the edge indices correspond. Useful for lots of things, very easy to create lines from this to plug into K2 or something for some ropey FEA (or not so ropey!) ;)
 
 As this component can potentially create a LOT of data, especially with dense meshes, care should be taken with the MinRatio (R) input. This will try to constrain the tetra to be more or less elongated, which also means that the lower this value gets, the more tetra need to be added to satisfy this constraint. Start with very high values and lower them until satisfactory.
 
 Happy tetrahedralizing...
 
-#Contact
+# Contact
 
 tsvi@kadk.dk
 
