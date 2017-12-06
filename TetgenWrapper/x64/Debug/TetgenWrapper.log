@@ -1,6 +1,0 @@
-﻿  Wrapper.cpp
-c:\git\projects\tetrhino\tetrhino\tetgenwrapper\wrapper.cpp(128): warning C4101: 'plist': unreferenced local variable
-     Creating library C:\git\projects\TetRhino\TetRhino\x64\Debug\TetgenWrapper.lib and object C:\git\projects\TetRhino\TetRhino\x64\Debug\TetgenWrapper.exp
-LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-  TetgenWrapper.vcxproj -> C:\git\projects\TetRhino\TetRhino\x64\Debug\TetgenWrapper.dll
-  TetgenWrapper.vcxproj -> C:\git\projects\TetRhino\TetRhino\x64\Debug\TetgenWrapper.pdb (Partial PDB)
