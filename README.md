@@ -36,6 +36,10 @@ As this component can potentially create a LOT of data, especially with dense me
 
 Happy tetrahedralizing...
 
+# To do
+- Revise GH component output to better handle multiple inputs (output nicely organized data trees).
+- Look at exposing more control options for Tetgen.
+
 # Contact
 
 tsvi@kadk.dk
