@@ -39,11 +39,9 @@ namespace TetgenGH
         {
         }
 
-        private int MeshOutIndex, IndicesOutIndex, PointsOutIndex;
-
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            pManager.AddMeshParameter("Mesh", "M", "Mesh to tetrahedralize.", GH_ParamAccess.list);
+            pManager.AddMeshParameter("Mesh", "M", "Mesh to tetrahedralize.", GH_ParamAccess.item);
             pManager.AddIntegerParameter("Flags", "F", "Tetgen flags. 0 = return list of tetrahedra, 1 = return triangulated mesh, 2 = return tetra indices, "
                 + "3 = return edge indices.", GH_ParamAccess.item, 1);
             pManager.AddNumberParameter("MinRatio", "R", "Tetrahedron ratio.", GH_ParamAccess.item, 2.0);
@@ -51,17 +49,16 @@ namespace TetgenGH
 
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            MeshOutIndex = pManager.AddMeshParameter("Mesh", "M", "Output mesh.", GH_ParamAccess.tree);
-            IndicesOutIndex = pManager.AddIntegerParameter("Indices", "I", "Output indices. If F == 2, then this will be a tree with tetrahedra indices as sub-lists (4 per list)." + 
+            pManager.AddMeshParameter("Mesh", "M", "Output mesh.", GH_ParamAccess.list);
+            pManager.AddIntegerParameter("Indices", "I", "Output indices. If F == 2, then this will be a tree with tetrahedra indices as sub-lists (4 per list)." + 
                 " If F == 3, then this will be a tree with edge indices as sub-lists (2 per list).", GH_ParamAccess.tree);
-            PointsOutIndex = pManager.AddPointParameter("Points", "P", "Output points. If F is 2 or 3, then the indices from I will correspond to this point list.", GH_ParamAccess.tree);
+            pManager.AddPointParameter("Points", "P", "Output points. If F is 2 or 3, then the indices from I will correspond to this point list.", GH_ParamAccess.list);
         }
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            List<Mesh> meshes = new List<Mesh>();
-
-            if (!DA.GetDataList("Mesh", meshes))
+            Mesh mesh = new Mesh();
+            if (!DA.GetData("Mesh", ref mesh))
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "No input mesh specified.");
                 return;
@@ -80,62 +77,56 @@ namespace TetgenGH
             b.minratio = minratio;
             b.coarsen = 1;
 
-            DataTree<int> indices = new DataTree<int>();
-            DataTree<GH_Mesh> meshes_out = new DataTree<GH_Mesh>();
-            DataTree<GH_Point> points_out = new DataTree<GH_Point>();
+            TetgenMesh tin = TetgenRC.ExtensionMethods.ToTetgenMesh(mesh);
+            TetgenSharp.TetgenMesh tm = TetgenSharp.TetRhino.Tetrahedralize(tin, b);
 
+            DataTree<int> indices;
             int N, index = 0;
             GH_Path path;
 
-            for (int i = 0; i < meshes.Count; ++i)
+            switch (flags)
             {
-                TetgenMesh tin = TetgenRC.ExtensionMethods.ToTetgenMesh(meshes[i]);
-                TetgenSharp.TetgenMesh tm = TetgenSharp.TetRhino.Tetrahedralize(tin, b);
-                //path = new GH_Path(i);
+                case (0):
+                    DA.SetDataList("Mesh", TetgenRC.ExtensionMethods.TetraToRhinoMesh(tm).Select(x => new GH_Mesh(x)));
+                    break;
+                case (1):
+                    DA.SetDataList("Mesh", new GH_Mesh[] { new GH_Mesh(TetgenRC.ExtensionMethods.ToRhinoMesh(tm)) });
+                    break;
+                case (2):
+                    indices = new DataTree<int>();
+                    N = tm.TetraIndices.Length / 4;
+                    for (int i = 0; i < N; ++i)
+                    {
+                        path = new GH_Path(i);
+                        index = i * 4;
 
-                switch (flags)
-                {
-                    case (0):
-                        meshes_out.AddRange(TetgenRC.ExtensionMethods.TetraToRhinoMesh(tm).Select(x => new GH_Mesh(x)), new GH_Path(i, 0));
-                        break;
-                    case (1):
-                        meshes_out.Add(new GH_Mesh(TetgenRC.ExtensionMethods.ToRhinoMesh(tm)), new GH_Path(i, 0));
-                        break;
-                    case (2):
-                        N = tm.TetraIndices.Length / 4;
-                        for (int j = 0; j < N; ++j)
-                        {
-                            path = new GH_Path(i, j);
-                            index = j * 4;
+                        indices.Add(tm.TetraIndices[index], path);
+                        indices.Add(tm.TetraIndices[index + 1], path);
+                        indices.Add(tm.TetraIndices[index + 2], path);
+                        indices.Add(tm.TetraIndices[index + 3], path);
+                    }
 
-                            indices.Add(tm.TetraIndices[index], path);
-                            indices.Add(tm.TetraIndices[index + 1], path);
-                            indices.Add(tm.TetraIndices[index + 2], path);
-                            indices.Add(tm.TetraIndices[index + 3], path);
-                        }
-                        points_out.AddRange(TetgenRC.ExtensionMethods.ToPointList(tm).Select(x => new GH_Point(x)), new GH_Path(i, 0));
-                        break;
-                    case (3):
-                        N = tm.EdgeIndices.Length / 2;
-                        for (int j = 0; j < N; ++j)
-                        {
-                            path = new GH_Path(i, j);
-                            index = j * 2;
+                    DA.SetDataTree(1, indices);
+                    DA.SetDataList("Points", TetgenRC.ExtensionMethods.ToPointList(tm));
+                    break;
+                case (3):
+                    indices = new DataTree<int>();
+                    N = tm.EdgeIndices.Length / 2;
+                    for (int i = 0; i < N; ++i)
+                    {
+                        path = new GH_Path(i);
+                        index = i * 2;
 
-                            indices.Add(tm.EdgeIndices[index], path);
-                            indices.Add(tm.EdgeIndices[index + 1], path);
-                        }
+                        indices.Add(tm.EdgeIndices[index], path);
+                        indices.Add(tm.EdgeIndices[index + 1], path);
+                    }
 
-                        points_out.AddRange(TetgenRC.ExtensionMethods.ToPointList(tm).Select(x => new GH_Point(x)), new GH_Path(i, 0));
-                        break;
-                    default:
-                        break;
-                }
+                    DA.SetDataTree(1, indices);
+                    DA.SetDataList("Points", TetgenRC.ExtensionMethods.ToPointList(tm));
+                    break;
+                default:
+                    break;
             }
-
-            DA.SetDataTree(MeshOutIndex, meshes_out);
-            DA.SetDataTree(IndicesOutIndex, indices);
-            DA.SetDataTree(PointsOutIndex, points_out);
         }
 
         protected override System.Drawing.Bitmap Icon
