@@ -53,6 +53,7 @@ namespace TetgenGH
             pManager.AddIntegerParameter("Indices", "I", "Output indices. If F == 2, then this will be a tree with tetrahedra indices as sub-lists (4 per list)." + 
                 " If F == 3, then this will be a tree with edge indices as sub-lists (2 per list).", GH_ParamAccess.tree);
             pManager.AddPointParameter("Points", "P", "Output points. If F is 2 or 3, then the indices from I will correspond to this point list.", GH_ParamAccess.list);
+            pManager.AddNumberParameter("Length", "L", "elements list length. The length of indices", GH_ParamAccess.list); //AJOUT BH
         }
 
         protected override void SolveInstance(IGH_DataAccess DA)
@@ -95,6 +96,7 @@ namespace TetgenGH
                 case (2):
                     indices = new DataTree<int>();
                     N = tm.TetraIndices.Length / 4;
+					DA.SetData("Length", N);                                    //Ajout BH
                     for (int i = 0; i < N; ++i)
                     {
                         path = new GH_Path(i);
