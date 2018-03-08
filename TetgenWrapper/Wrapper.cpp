@@ -156,45 +156,33 @@ tetgenio* io_to_tetgenio(InteropMesh* mesh)
 
 	int nverts3 = nverts * 3;
 	io->pointlist = new REAL[nverts3];
+	*(io->pointlist) = *(mesh->vertices);
 
-
-	for (int i = 0; i < nverts3; i+= 3) {
-		//coord = (double *)&mesh->vertices[i];
-		//iverts = i * 3;
-		/*
-		io->pointlist[iverts] = (REAL)coord[0];
-		io->pointlist[iverts + 1] = (REAL)coord[1];
-		io->pointlist[iverts + 2] = (REAL)coord[2];
-		*/
-		io->pointlist[i] = mesh->vertices[i];
-		io->pointlist[i + 1] = mesh->vertices[i + 1];
-		io->pointlist[i + 2] = mesh->vertices[i + 2];
-	}
-
-	//nfaces = (int)(nverts / 3);
 	io->numberoffacets = nfaces;
 	io->facetlist = new tetgenio::facet[nfaces];
 
-	// Default use '1' as the array starting index.
 	io->firstnumber = 0;
+	io->mesh_dim = 3;
 	iverts = io->firstnumber;
 	int fi = 0;
+	f = &io->facetlist[0];
+
 	for (int i = 0; i < nfaces; i++) {
-		f = &io->facetlist[i];
 		io->init(f);
 		// In .stl format, each facet has one polygon, no hole.
 		f->numberofpolygons = 1;
 		f->polygonlist = new tetgenio::polygon[1];
 		p = &f->polygonlist[0];
 		io->init(p);
-		// Each polygon has three vertices.
+
+		// Initialize polygon
 		p->numberofvertices = mesh->faceSizes[i];
 		p->vertexlist = new int[p->numberofvertices];
 		for (int j = 0; j < p->numberofvertices; ++j)
 		{
 			p->vertexlist[j] = mesh->faceIndices[fi]; fi++;
 		}
-		//fi += p->numberofvertices;
+		f++;
 	}
 
 	return io;
