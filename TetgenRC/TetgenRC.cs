@@ -36,13 +36,16 @@ namespace TetgenRC
         public static TetgenMesh ToTetgenMesh(this Mesh m)
         {
             Mesh M = m.DuplicateMesh();
-            M.Faces.ConvertQuadsToTriangles();
+            var facets = M.GetNgonAndFacesEnumerable();
+            int N = M.GetNgonAndFacesCount();
+
             M.UnifyNormals();
 
             TetgenMesh tm = new TetgenMesh();
             tm.Vertices = new double[M.Vertices.Count * 3];
-            tm.FaceIndices = new int[M.Faces.Count * 3];
-            tm.FaceSizes = new int[M.Faces.Count];
+
+            List<int> face_indices = new List<int>();
+            List<int> face_sizes = new List<int>();
 
             for (int i = 0; i < M.Vertices.Count; ++i)
             {
@@ -51,13 +54,14 @@ namespace TetgenRC
                 tm.Vertices[i * 3 + 2] = M.Vertices[i].Z;
             }
 
-            for (int i = 0; i < M.Faces.Count; ++i)
+            foreach (var f in facets)
             {
-                tm.FaceSizes[i] = 3;
-                tm.FaceIndices[i * 3] = M.Faces[i].A;
-                tm.FaceIndices[i * 3 + 1] = M.Faces[i].B;
-                tm.FaceIndices[i * 3 + 2] = M.Faces[i].C;
+                face_sizes.Add(f.BoundaryVertexCount);
+                face_indices.AddRange(f.BoundaryVertexIndexList().Select(x => (int)x));
             }
+
+            tm.FaceSizes = face_sizes.ToArray();
+            tm.FaceIndices = face_indices.ToArray();
 
             return tm;
         }
@@ -105,6 +109,7 @@ namespace TetgenRC
             m.FaceNormals.ComputeFaceNormals();
             m.Normals.ComputeNormals();
             m.UnifyNormals();
+            m.Ngons.AddPlanarNgons(0.1);
 
             if (m.SolidOrientation() <= 0)
                 m.Flip(true, true, true);
