@@ -1,0 +1,7 @@
+.vs
+bin
+intermediate
+packages
+*.vcxproj.user
+*.csproj.user
+*/obj
