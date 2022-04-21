@@ -48,6 +48,8 @@ namespace TetgenGH
                 + "3 = return edge indices.", GH_ParamAccess.item, 1);
             pManager.AddNumberParameter("MinRatio", "R", "Tetrahedron ratio.", GH_ParamAccess.item, 2.0);
             pManager.AddNumberParameter("MaxVolume", "MV", "Tetrahedron max volume.", GH_ParamAccess.item, -1);
+            pManager.AddIntegerParameter("Steiner", "S", "Steiner mode.", GH_ParamAccess.item, 0);
+            pManager.AddIntegerParameter("Coarsen", "C", "Coarsen.", GH_ParamAccess.item, 1);
         }
 
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
@@ -79,6 +81,11 @@ namespace TetgenGH
             double maxvolume = 2.0;
             DA.GetData("MaxVolume", ref maxvolume);
 
+            int steiner = 0;
+            DA.GetData("Steiner", ref steiner);
+
+            int coarsen = 0;
+            DA.GetData("Coarsen", ref coarsen);
 
             DataTree<int> indices = new DataTree<int>();
             DataTree<GH_Mesh> meshes_out = new DataTree<GH_Mesh>();
@@ -102,12 +109,19 @@ namespace TetgenGH
                 b.quality = 1;
                 b.plc = 1;
                 b.minratio = minratio;
-                b.coarsen = 1;
+                b.coarsen = coarsen;
                 b.maxvolume = maxvolume;
+                b.supsteiner_level = steiner;
 
                 TetgenMesh tin = TetgenRC.ExtensionMethods.ToTetgenMesh(meshes[i]);
                 TetgenSharp.TetgenMesh tm = TetgenSharp.TetRhino.Tetrahedralize(tin, b);
                 //path = new GH_Path(i);
+
+                if (tm == null)
+                {
+                    this.Message = "Failed.";
+                    return;
+                }
 
                 switch (flags)
                 {
@@ -118,6 +132,7 @@ namespace TetgenGH
                         meshes_out.Add(new GH_Mesh(TetgenRC.ExtensionMethods.ToRhinoMesh(tm)), new GH_Path(i, 0));
                         break;
                     case (2):
+
                         N = tm.TetraIndices.Length / 4;
                         for (int j = 0; j < N; ++j)
                         {

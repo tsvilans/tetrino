@@ -48,6 +48,7 @@ namespace TetgenRC
             for (int i = 0; i < M.Faces.Count; ++i)
             {
                 int fsize = M.Faces[i].IsQuad ? 4 : 3;
+
                 FaceIndexCount += fsize;
                 tm.FaceSizes[i] = fsize;
             }
@@ -67,9 +68,15 @@ namespace TetgenRC
                 tm.FaceIndices[fi] = M.Faces[i].A; fi++;
                 tm.FaceIndices[fi] = M.Faces[i].B; fi++;
                 tm.FaceIndices[fi] = M.Faces[i].C; fi++;
+
                 if (M.Faces[i].IsQuad)
-                    tm.FaceIndices[fi] = M.Faces[i].D; fi++;
+                {
+                    tm.FaceIndices[fi] = M.Faces[i].D; 
+                    fi++;
+                }
+
             }
+
 
             return tm;
         }
