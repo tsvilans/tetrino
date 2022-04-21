@@ -247,6 +247,7 @@ namespace TetgenSharp
                 if (result == null)
                 {
                     System.Console.WriteLine("Result is null.");
+                    throw new Exception("TetgenSharp::Tetrahedralize => Result is null.");
                     return null;
                 }
 

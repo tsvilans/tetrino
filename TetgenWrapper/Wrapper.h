@@ -22,7 +22,6 @@
 
 #include <cstdlib>
 #include "tetgen.h"
-
 #include <iostream>
 
 struct InteropMesh
@@ -77,5 +76,41 @@ extern "C" __declspec(dllexport) int test();
 tetgenio* io_to_tetgenio(InteropMesh* mesh);
 
 InteropMesh* tetgenio_to_io(tetgenio* io);
+
+#ifdef NEW_WRAPPER
+
+namespace TetgenWrapper
+{
+#ifdef __cplusplus
+	extern "C" {
+#endif
+		// tetgenio exports
+		TETGEN_EXPORT tetgenio* tetgenio_create();
+		TETGEN_EXPORT void tetgenio_delete(tetgenio* ptr);
+
+		TETGEN_EXPORT tetgenio* tetrahedralize(tetgenbehavior* behaviour, tetgenio* in);
+
+		// tetgenbehavior exports
+		TETGEN_EXPORT tetgenbehavior* tetgenbehavior_create();
+		TETGEN_EXPORT void tetgenbehavior_delete(tetgenbehavior* ptr);
+
+		TETGEN_EXPORT void tetgenbehavior_set_plc(tetgenbehavior* ptr, int plc);
+		TETGEN_EXPORT void tetgenbehavior_set_refine(tetgenbehavior* ptr, int refine);
+		TETGEN_EXPORT void tetgenbehavior_set_quality(tetgenbehavior* ptr, int quality);
+		TETGEN_EXPORT void tetgenbehavior_set_coarsen(tetgenbehavior* ptr, int coarsen);
+		TETGEN_EXPORT void tetgenbehavior_set_insertaddpoints(tetgenbehavior* ptr, int insertaddpoints);
+
+		TETGEN_EXPORT void tetgenbehavior_set_maxvolume(tetgenbehavior* ptr, double maxvolume);
+		TETGEN_EXPORT void tetgenbehavior_set_minratio(tetgenbehavior* ptr, double minratio);
+		TETGEN_EXPORT void tetgenbehavior_set_mindihedral(tetgenbehavior* ptr, double mindihedral);
+		TETGEN_EXPORT void tetgenbehavior_set_optmaxdihedral(tetgenbehavior* ptr, double optmaxdihedral);
+		//TETGEN_EXPORT void tetgenbehavior_set_optminslidihed(tetgenbehavior* ptr, double optminslidihed);
+		//TETGEN_EXPORT void tetgenbehavior_set_optminsmtdihed(tetgenbehavior* ptr, double optminsmtdihed);
+
+#ifdef __cplusplus
+	}
+#endif
+}
+#endif
 
 #endif

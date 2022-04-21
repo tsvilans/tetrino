@@ -39,7 +39,7 @@ namespace TetgenGH
         {
         }
 
-        private int MeshOutIndex, IndicesOutIndex, PointsOutIndex;
+        private int MeshOutIndex, IndicesOutIndex, PointsOutIndex, FacesOutIndex;
 
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
@@ -47,6 +47,7 @@ namespace TetgenGH
             pManager.AddIntegerParameter("Flags", "F", "Tetgen flags. 0 = return list of tetrahedra, 1 = return triangulated mesh, 2 = return tetra indices, "
                 + "3 = return edge indices.", GH_ParamAccess.item, 1);
             pManager.AddNumberParameter("MinRatio", "R", "Tetrahedron ratio.", GH_ParamAccess.item, 2.0);
+            pManager.AddNumberParameter("MaxVolume", "MV", "Tetrahedron max volume.", GH_ParamAccess.item, -1);
         }
 
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
@@ -55,6 +56,7 @@ namespace TetgenGH
             IndicesOutIndex = pManager.AddIntegerParameter("Indices", "I", "Output indices. If F == 2, then this will be a tree with tetrahedra indices as sub-lists (4 per list)." + 
                 " If F == 3, then this will be a tree with edge indices as sub-lists (2 per list).", GH_ParamAccess.tree);
             PointsOutIndex = pManager.AddPointParameter("Points", "P", "Output points. If F is 2 or 3, then the indices from I will correspond to this point list.", GH_ParamAccess.tree);
+            FacesOutIndex = pManager.AddIntegerParameter("Face indices", "FI", "Output indices for faces.", GH_ParamAccess.tree);
         }
 
         protected override void SolveInstance(IGH_DataAccess DA)
@@ -74,21 +76,35 @@ namespace TetgenGH
             DA.GetData("MinRatio", ref minratio);
             if (minratio <= 1.0) minratio = 1.1;
 
-            TetgenSharp.TetgenBehaviour b = new TetgenSharp.TetgenBehaviour();
-            b.quality = 1;
-            b.plc = 1;
-            b.minratio = minratio;
-            b.coarsen = 1;
+            double maxvolume = 2.0;
+            DA.GetData("MaxVolume", ref maxvolume);
+
 
             DataTree<int> indices = new DataTree<int>();
             DataTree<GH_Mesh> meshes_out = new DataTree<GH_Mesh>();
             DataTree<GH_Point> points_out = new DataTree<GH_Point>();
+
+            var face_indices = new DataTree<int>();
+            var verts_indices = new DataTree<int>();
 
             int N, index = 0;
             GH_Path path;
 
             for (int i = 0; i < meshes.Count; ++i)
             {
+                if (maxvolume > 0)
+                {
+                    var vmp = VolumeMassProperties.Compute(meshes[i]);
+                    maxvolume = Math.Max(maxvolume, vmp.Volume / 100000); // Safety so as not to end up with too many elements...
+                }
+
+                TetgenSharp.TetgenBehaviour b = new TetgenSharp.TetgenBehaviour();
+                b.quality = 1;
+                b.plc = 1;
+                b.minratio = minratio;
+                b.coarsen = 1;
+                b.maxvolume = maxvolume;
+
                 TetgenMesh tin = TetgenRC.ExtensionMethods.ToTetgenMesh(meshes[i]);
                 TetgenSharp.TetgenMesh tm = TetgenSharp.TetRhino.Tetrahedralize(tin, b);
                 //path = new GH_Path(i);
@@ -113,6 +129,20 @@ namespace TetgenGH
                             indices.Add(tm.TetraIndices[index + 2], path);
                             indices.Add(tm.TetraIndices[index + 3], path);
                         }
+
+                        N = tm.FaceSizes.Length;
+
+                        int fi = 0;
+                        for (int j = 0; j < N; ++j)
+                        {
+                            var fpath = new GH_Path(i, j);
+                            for (int k = 0; k < tm.FaceSizes[j]; ++k)
+                            {
+                                face_indices.Add(tm.FaceIndices[fi], fpath);
+                                fi++;
+                            }
+                        }
+
                         points_out.AddRange(TetgenRC.ExtensionMethods.ToPointList(tm).Select(x => new GH_Point(x)), new GH_Path(i, 0));
                         break;
                     case (3):
@@ -136,6 +166,7 @@ namespace TetgenGH
             DA.SetDataTree(MeshOutIndex, meshes_out);
             DA.SetDataTree(IndicesOutIndex, indices);
             DA.SetDataTree(PointsOutIndex, points_out);
+            DA.SetDataTree(FacesOutIndex, face_indices);
         }
 
         protected override System.Drawing.Bitmap Icon

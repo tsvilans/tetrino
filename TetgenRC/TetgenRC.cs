@@ -36,13 +36,23 @@ namespace TetgenRC
         public static TetgenMesh ToTetgenMesh(this Mesh m)
         {
             Mesh M = m.DuplicateMesh();
-            M.Faces.ConvertQuadsToTriangles();
+            //M.Faces.ConvertQuadsToTriangles();
             M.UnifyNormals();
 
             TetgenMesh tm = new TetgenMesh();
             tm.Vertices = new double[M.Vertices.Count * 3];
-            tm.FaceIndices = new int[M.Faces.Count * 3];
+
+            var FaceIndexCount = 0;
             tm.FaceSizes = new int[M.Faces.Count];
+
+            for (int i = 0; i < M.Faces.Count; ++i)
+            {
+                int fsize = M.Faces[i].IsQuad ? 4 : 3;
+                FaceIndexCount += fsize;
+                tm.FaceSizes[i] = fsize;
+            }
+
+            tm.FaceIndices = new int[FaceIndexCount];
 
             for (int i = 0; i < M.Vertices.Count; ++i)
             {
@@ -51,12 +61,14 @@ namespace TetgenRC
                 tm.Vertices[i * 3 + 2] = M.Vertices[i].Z;
             }
 
+            int fi = 0;
             for (int i = 0; i < M.Faces.Count; ++i)
             {
-                tm.FaceSizes[i] = 3;
-                tm.FaceIndices[i * 3] = M.Faces[i].A;
-                tm.FaceIndices[i * 3 + 1] = M.Faces[i].B;
-                tm.FaceIndices[i * 3 + 2] = M.Faces[i].C;
+                tm.FaceIndices[fi] = M.Faces[i].A; fi++;
+                tm.FaceIndices[fi] = M.Faces[i].B; fi++;
+                tm.FaceIndices[fi] = M.Faces[i].C; fi++;
+                if (M.Faces[i].IsQuad)
+                    tm.FaceIndices[fi] = M.Faces[i].D; fi++;
             }
 
             return tm;

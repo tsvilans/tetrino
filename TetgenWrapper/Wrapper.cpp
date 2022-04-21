@@ -51,10 +51,10 @@ InteropMesh* performTetgen(InteropMesh* mesh, TetgenBehaviour* tb)
 	tetgenio* in = io_to_tetgenio(mesh);
 	std::cout << "Tetgen :: Num verts in: " << in->numberofpoints << std::endl;
 	tetgenio* out = new tetgenio();
-
+	
 	// XXXXXXX
 	// Detect improper combinations of switches.
-
+	
 	if (beh.nobisect && (!beh.plc && !beh.refine)) {
 		beh.plc = 1;
 	}
@@ -64,15 +64,17 @@ InteropMesh* performTetgen(InteropMesh* mesh, TetgenBehaviour* tb)
 	if (beh.diagnose && !beh.plc) {
 		beh.plc = 1;
 	}
-	if (beh.refine && !beh.quality) {
-		beh.optlevel = 0;
-	}
-	if (beh.insertaddpoints && (beh.optlevel == 0)) {
-		beh.optlevel = 2;
-	}
-	if (beh.coarsen && (beh.optlevel == 0)) {
-		beh.optlevel = 2;
-	}
+	//if (beh.refine && !beh.quality) {
+	//	beh.optlevel = 0;
+	//}
+	//if (beh.insertaddpoints && (beh.optlevel == 0)) {
+	//	beh.optlevel = 2;
+	//}
+	//if (beh.coarsen && (beh.optlevel == 0)) {
+	//	beh.optlevel = 2;
+	//}
+	
+	
 
 	if ((beh.refine || beh.plc) && beh.weighted) {
 		printf("Error:  Switches -w cannot use together with -p or -r.\n");
@@ -110,15 +112,15 @@ InteropMesh* performTetgen(InteropMesh* mesh, TetgenBehaviour* tb)
 				beh.optmaxdihedral = 179.999;
 			}
 		}
-		if (beh.optminsmtdihed < 179.999) {
-			beh.optminsmtdihed = 179.999;
-		}
-		if (beh.optminslidihed < 179.999) {
-			beh.optminslidihed = 179.999;
-		}
+		//if (beh.optminsmtdihed < 179.999) {
+		//	beh.optminsmtdihed = 179.999;
+		//}
+		//if (beh.optminslidihed < 179.999) {
+		//	beh.optminslidihed = 179.999;
+		//}
 	}
 	// XXXXXXX
-
+	
 
 	tetrahedralize(&beh, in, out);
 
@@ -388,3 +390,4 @@ void freeMesh(InteropMesh* mesh)
 {
 	mesh->free();
 }
+
